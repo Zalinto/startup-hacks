@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function PublicLayout({
   children,
@@ -12,8 +13,12 @@ export default function PublicLayout({
         <h3 className="font-bold text-lg">Startup Hacks</h3>
         <div className="flex gap-4 items-center">
           <SignedIn>
-            <Button>Go to Dashboard</Button>
-            <UserButton />
+            <Button asChild>
+              <Link href="/dash">Go to Dashboard</Link>
+            </Button>
+            <div className="w-[28px] h-[28px]">
+              <UserButton />
+            </div>
           </SignedIn>
           <SignedOut>
             <SignInButton mode="modal">
