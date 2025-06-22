@@ -19,19 +19,27 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import BrainstormingChat from "./components/chat";
 import BrainstormingSummary from "./components/summary";
-import { useAuth } from "@clerk/nextjs";
+import { useFetchProjectDetails } from "@/queryClients/useFetchProjectDetails";
+import { useUser } from "@clerk/nextjs";
+import { useParams } from "next/navigation";
 
 export default function ProjectBrainstorming() {
-  const project = useActiveProject().data;
+  const params = useParams();
+  const project_id = params.id as string;
+  const { user } = useUser();
+
+  const { projectDetails } = useFetchProjectDetails(project_id, user?.id ?? "");
+
+
   const [isBrainstorming, setIsBrainstorming] = useState(true);
-  const auth = useAuth();
+
   return (
     <>
       <PageHeader
         title={
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem>{project?.title ?? "Loading..."}</BreadcrumbItem>
+              <BreadcrumbItem>{projectDetails ? projectDetails[0]?.title : "Loading..."}</BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbPage className="line-clamp-1 font-bold flex gap-2 items-center">
                 <LightbulbIcon />
