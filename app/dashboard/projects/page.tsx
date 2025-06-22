@@ -18,10 +18,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import { useFetchProjects } from "@/queryClients/useFetchProjects";
+import { useUser } from "@clerk/nextjs";
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 function ProjectCard({ project }: { project: Project }) {
   return (
-    <Link href={`/dashboard/projects/${project.id}`}>
+    <Link href={`/dashboard/projects/${project.project_id}`}>
       <Card className="hover:border-accent-foreground">
         <CardHeader>
           <CardTitle>{project.title}</CardTitle>
@@ -35,7 +40,19 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 export default function MyProjects() {
-  const projects = useQuery(getProjectsQuery);
+  const { user } = useUser();
+
+  const { projects, addProject } = useFetchProjects(user?.id ?? "");
+
+  const [projectName, setProjectName] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const handleCreateProject = () => {
+    addProject({ title: projectName });
+    setProjectName("");
+    setOpen(false);
+  };
+
   return (
     <>
       <PageHeader
@@ -49,17 +66,40 @@ export default function MyProjects() {
           </Breadcrumb>
         }
         nav={
-          <Button
-            onClick={() => alert("TODO: start a new untitled project")}
-            variant={"outline"}
-          >
-            <PlusIcon /> Start New
-          </Button>
+          <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogTrigger asChild>
+              <Button variant={"outline"}>
+                <PlusIcon /> Start New
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Start New Project</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Enter a name for your new project.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <Input
+                placeholder="Project Name"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+              />
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <Button
+                  onClick={handleCreateProject}
+                  disabled={!projectName.trim()}
+                >
+                  Create
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         }
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-        {projects.data?.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+        {projects.data?.map((project: Project) => (
+          <ProjectCard key={project.project_id} project={project} />
         ))}
       </div>
     </>

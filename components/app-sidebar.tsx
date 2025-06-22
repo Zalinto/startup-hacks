@@ -34,7 +34,7 @@ export type SidebarItem = {
 
 export function AppSidebar({ items }: { items: SidebarItem[] }) {
   const pathname = usePathname();
-  console.log(pathname, items);
+
   return (
     <Sidebar>
       <SidebarHeader>
