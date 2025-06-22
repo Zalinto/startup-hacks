@@ -38,7 +38,7 @@ function DashboardSidebar() {
         icon: ClipboardTextIcon,
         items: recentProjects.data?.map((project) => ({
           title: project.title,
-          url: `/dashboard/projects/${project.id}`,
+          url: `/dashboard/projects/${project.project_id}`,
         })),
       },
     ],
@@ -56,25 +56,25 @@ function DashboardSidebar() {
       },
       {
         title: projectDetail.data.title,
-        url: `/dashboard/projects/${projectDetail.data.id}/brainstorming`,
+        url: `/dashboard/projects/${projectDetail.data.project_id}/brainstorming`,
         icon: ClipboardTextIcon,
         matcher: () => false,
         items: [
           {
             icon: LightbulbIcon,
             title: "Brainstorming",
-            url: `/dashboard/projects/${projectDetail.data.id}/brainstorming`,
+            url: `/dashboard/projects/${projectDetail.data.project_id}/brainstorming`,
           },
           {
             icon: MegaphoneIcon,
 
             title: "Outreach",
-            url: `/dashboard/projects/${projectDetail.data.id}/outreach`,
+            url: `/dashboard/projects/${projectDetail.data.project_id}/outreach`,
           },
           {
             icon: QuestionIcon,
             title: "Customer Support",
-            url: `/dashboard/projects/${projectDetail.data.id}/support`,
+            url: `/dashboard/projects/${projectDetail.data.project_id}/support`,
           },
         ],
       },
