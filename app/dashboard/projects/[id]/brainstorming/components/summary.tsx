@@ -92,7 +92,15 @@ function Document({
   );
 }
 
-export default function BrainstormingSummary({ summary }: { summary: string }) {
+export default function BrainstormingSummary({
+  summary,
+  prd,
+  styleGuide,
+}: {
+  summary: string;
+  prd: any;
+  styleGuide: any;
+}) {
   return (
     <div className="p-4">
       <Section title="Session Summary">
@@ -106,12 +114,12 @@ export default function BrainstormingSummary({ summary }: { summary: string }) {
           <Document
             title="Product Requirements Document (PRD)"
             description="Serves as a guide for teams to understand what needs to be built, why, and how success will be measured."
-            pdf={<ProductRequirementsDocument />}
+            pdf={<ProductRequirementsDocument data={prd} />}
           />
           <Document
             title="Style Guide"
             description="Defines the visual and written standards for your product, ensuring consistency in design, branding, and communication."
-            pdf={<BrandGuidelinesDocument />}
+            pdf={<BrandGuidelinesDocument data={styleGuide} />}
           />
         </div>
       </Section>

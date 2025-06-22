@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@/app/providers";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,33 +8,31 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/ui/page-header";
 import {
   ChatDotsIcon,
   FloppyDiskBackIcon,
   LightbulbIcon,
-  PenIcon,
 } from "@phosphor-icons/react/dist/ssr";
+import { useMutation } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { useState } from "react";
 import { useActiveProject } from "../hooks";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import BrainstormingChat, { Message } from "./components/chat";
 import BrainstormingSummary from "./components/summary";
-import { useFetchProjectDetails } from "@/queryClients/useFetchProjectDetails";
-import { useUser } from "@clerk/nextjs";
-import { useParams } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { api } from "@/app/providers";
 
 export default function ProjectBrainstorming() {
   const params = useParams();
-  const project_id = params.id as string;
-  const { user } = useUser();
 
   const project = useActiveProject();
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [summary, setSummary] = useState<string>("");
+  const [summary, setSummary] = useState<{
+    summary: string;
+    prd: any;
+    styleGuide: any;
+  } | null>(null);
 
   const [isBrainstorming, setIsBrainstorming] = useState(true);
 
@@ -43,11 +42,14 @@ export default function ProjectBrainstorming() {
         .map((msg) => `Sender: ${msg.sender}\nMessage: ${msg.message}`)
         .join("\n\n---\n\n");
 
-      const response = await api.post<string>("groq/summary", {
+      const response = await api.post<{
+        summary: string;
+        prd: any;
+        styleGuide: any;
+      }>("groq/summary", {
         message: megaMessage,
       });
       setSummary(response.data);
-      // return summary.data
     },
   });
 
@@ -99,7 +101,13 @@ export default function ProjectBrainstorming() {
       {isBrainstorming && (
         <BrainstormingChat messages={messages} setMessages={setMessages} />
       )}
-      {!isBrainstorming && <BrainstormingSummary summary={summary} />}
+      {!isBrainstorming && summary && (
+        <BrainstormingSummary
+          summary={summary.summary}
+          prd={summary.prd}
+          styleGuide={summary.styleGuide}
+        />
+      )}
     </>
   );
 }

@@ -4,30 +4,30 @@ import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 /* ---------- types ---------- */
 
 const mockData: BrandGuidelinesData = {
-  brandName: "Acme Corp",
-  tagline: "Acme: Powering Possibility",
+  brandName: "Paper Flight Co.",
+  tagline: "Take Flight with Imagination",
   missionStatement:
-    "To revolutionize everyday tools with innovative solutions that empower people around the world.",
+    "To inspire creativity and joy through beautifully crafted paper airplanes, empowering people of all ages to explore the magic of flight.",
   visionStatement:
-    "A future where every individual can achieve more through simple, reliable, and thoughtfully designed products.",
+    "To become the world's leading brand for innovative and inspiring paper airplanes, fostering a global community of paper flight enthusiasts.",
   values: [
-    "Innovation: We push boundaries and embrace new ideas.",
-    "Integrity: We do the right thing, always.",
-    "Empathy: We put people first in everything we create.",
-    "Excellence: We strive for the highest quality in every detail.",
+    "Creativity: We encourage boundless imagination and innovative design in every paper airplane.",
+    "Quality: We use premium materials and meticulous craftsmanship to ensure durable and enjoyable flying experiences.",
+    "Community: We foster a welcoming and inclusive community of paper airplane enthusiasts, sharing knowledge and celebrating the joy of flight.",
+    "Sustainability: We are committed to using eco-friendly materials and practices whenever possible.",
   ],
   brandPersonality: [
-    "innovative",
-    "dependable",
-    "approachable",
-    "optimistic",
-    "bold",
-    "empathetic",
+    "Imaginative",
+    "Playful",
+    "Innovative",
+    "Crafted",
+    "Inspiring",
+    "Community-driven",
   ],
   colors: {
-    primary: "#1A73E8",
-    secondary: "#DB4437",
-    accent: "#F4B400",
+    primary: "#007BFF",
+    secondary: "#F7F7F7",
+    accent: "#FFC107",
   },
   typography: {
     fontFamily: "Roboto, sans-serif",
@@ -62,39 +62,41 @@ const mockData: BrandGuidelinesData = {
   voiceAndTone: {
     brandVoice: {
       description:
-        "Clear, confident, and caring. We speak like a trusted friend who knows their stuff.",
+        "Enthusiastic and approachable, Paper Flight Co.'s voice is playful yet informative, encouraging exploration and creativity.",
       adjectives: [
-        "friendly",
-        "professional",
-        "concise",
-        "inspiring",
-        "welcoming",
+        "Friendly",
+        "Inspiring",
+        "Engaging",
+        "Knowledgeable",
+        "Imaginative",
       ],
     },
     dos: [
       "Use active voice",
-      "Keep sentences short",
-      "Speak directly to the user",
-      "Include a dash of warmth and humor where appropriate",
+      "Keep language concise and easy to understand",
+      "Inject personality and enthusiasm",
+      "Highlight the joy and wonder of flight",
+      "Encourage experimentation and creativity",
     ],
     donts: [
-      "Avoid jargon",
-      "Don't use passive constructions",
-      "No slang or idioms that confuse non-native speakers",
-      "Steer clear of overly complex metaphors",
+      "Use overly technical jargon",
+      "Be overly formal or corporate",
+      "Sound condescending or patronizing",
+      "Neglect the visual appeal of language",
+      "Forget to have fun!",
     ],
     toneExamples: {
       onboarding: {
-        good: "Welcome aboard! Let’s get you set up in just a few steps.",
-        bad: "Please proceed with the initialization process.",
+        good: "Welcome to Paper Flight Co.!  Get ready to unleash your inner aviator and soar to new heights.  We've got all the tools you need to design, fold, and fly amazing paper airplanes.",
+        bad: "Thank you for choosing Paper Flight Co.  Our products are designed to meet the highest standards of aerodynamics and durability.",
       },
       error: {
-        good: "Oops! Something went wrong. Let’s try that again.",
-        bad: "An error occurred during the operation.",
+        good: "Oops!  Looks like something went wrong.  Don't worry, our paper airplanes are built to withstand a few bumps.  Try again, and let us know if you need any help.",
+        bad: "Error 404:  Paper Airplane Not Found.  Please check your input and try again.",
       },
       encouragement: {
-        good: "You’re doing great! Almost there.",
-        bad: "Progress is underway.",
+        good: "You're on your way to becoming a paper airplane pro!  Keep experimenting with different designs and see how far you can fly.",
+        bad: "Continue to practice and improve your paper airplane skills.",
       },
     },
   },
