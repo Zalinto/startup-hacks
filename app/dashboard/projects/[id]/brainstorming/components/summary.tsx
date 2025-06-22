@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -5,8 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowSquareOutIcon, InfoIcon } from "@phosphor-icons/react/dist/ssr";
-import Link from "next/link";
+import { DownloadSimpleIcon, FileIcon } from "@phosphor-icons/react/dist/ssr";
+import { DocumentProps, PDFDownloadLink } from "@react-pdf/renderer";
+import { ProductRequirementsDocument } from "../templates/prd";
+import { StyleGuideDocument } from "../templates/style-guide";
 
 function Section({
   title,
@@ -26,24 +29,37 @@ function Section({
 function Document({
   title,
   description,
-  link,
+  // link,
+  pdf,
 }: {
   title: string;
   description: string;
-  link: string;
+  // link: string;
+  pdf?: React.ReactElement<DocumentProps>;
 }) {
   return (
-    <Link href={link}>
-      <Card className="mb-4">
-        <CardHeader>
-          <CardTitle className="flex justify-between">
-            {title}
-            <ArrowSquareOutIcon className="text-muted-foreground" />
-          </CardTitle>
-          <CardDescription>{description}</CardDescription>
-        </CardHeader>
-      </Card>
-    </Link>
+    <Card className="mb-4">
+      <CardHeader>
+        <CardTitle className="flex gap-2">
+          <FileIcon className="text-muted-foreground" />
+          {title}
+        </CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      {pdf && (
+        <CardContent>
+          <Button asChild variant="secondary">
+            <PDFDownloadLink
+              document={pdf}
+              fileName={`${title.replace(/\s+/g, "-").toLowerCase()}.pdf`}
+            >
+              <DownloadSimpleIcon />
+              Download
+            </PDFDownloadLink>
+          </Button>
+        </CardContent>
+      )}
+    </Card>
   );
 }
 
@@ -66,12 +82,12 @@ export default function BrainstormingSummary() {
           <Document
             title="Product Requirements Document (PRD)"
             description="Serves as a guide for teams to understand what needs to be built, why, and how success will be measured."
-            link="#"
+            pdf={<ProductRequirementsDocument />}
           />
           <Document
             title="Style Guide"
             description="Defines the visual and written standards for your product, ensuring consistency in design, branding, and communication."
-            link="#"
+            pdf={<StyleGuideDocument />}
           />
         </div>
       </Section>

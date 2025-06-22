@@ -49,7 +49,10 @@ export default function MyProjects() {
           </Breadcrumb>
         }
         nav={
-          <Button onClick={() => alert("TODO: start a new untitled project")}>
+          <Button
+            onClick={() => alert("TODO: start a new untitled project")}
+            variant={"outline"}
+          >
             <PlusIcon /> Start New
           </Button>
         }

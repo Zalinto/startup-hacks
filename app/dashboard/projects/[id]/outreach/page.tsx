@@ -77,7 +77,7 @@ function StartNewDialog() {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button>
+        <Button variant={"outline"}>
           <PlusIcon />
           Start New
         </Button>

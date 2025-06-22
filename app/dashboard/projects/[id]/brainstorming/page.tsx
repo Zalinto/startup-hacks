@@ -39,7 +39,10 @@ export default function ProjectBrainstorming() {
           </Breadcrumb>
         }
         nav={
-          <Button onClick={() => setIsBrainstorming(!isBrainstorming)}>
+          <Button
+            onClick={() => setIsBrainstorming(!isBrainstorming)}
+            variant={"outline"}
+          >
             {isBrainstorming ? (
               <>
                 <FloppyDiskBackIcon />
