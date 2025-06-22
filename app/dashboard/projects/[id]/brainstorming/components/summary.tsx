@@ -22,6 +22,7 @@ import {
   AlertDialogFooter,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 function Section({
   title,
@@ -41,12 +42,10 @@ function Section({
 function Document({
   title,
   description,
-  // link,
   pdf,
 }: {
   title: string;
   description: string;
-  // link: string;
   pdf?: React.ReactElement<DocumentProps>;
 }) {
   return (
@@ -67,6 +66,7 @@ function Document({
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent className="min-w-[calc(100%_-_32px)] h-[calc(100vh_-_32px)] flex flex-col">
+              <AlertDialogTitle hidden>{title}</AlertDialogTitle>
               <div className="block flex-1 -m-6 mb-0">
                 <PDFViewer className="block w-full h-full rounded-sm overflow-clip ">
                   {pdf}
@@ -98,10 +98,14 @@ export default function BrainstormingSummary() {
       <Section title="Session Summary">
         <Card>
           <CardContent>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam
-            reprehenderit maxime, excepturi facere recusandae vitae, voluptate
-            provident, commodi quo natus labore nesciunt eum incidunt? Nesciunt
-            id voluptatibus inventore sapiente hic?
+            This brainstorming session focused on generating creative ideas for
+            the new product. Key user pain points were identified, a range of
+            potential solutions was explored, and features were prioritized
+            based on impact and feasibility. The outcome includes a clear
+            product vision, a definition of core functionalities, and actionable
+            next steps for prototyping and validation. The process established a
+            strong foundation for a user-centered and market-driven product
+            strategy.
           </CardContent>
         </Card>
       </Section>
