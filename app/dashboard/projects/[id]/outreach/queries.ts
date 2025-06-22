@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
+import axios from "axios";
 
 export type Campaign = {
   campaign_id: string;
@@ -14,29 +15,19 @@ export const getCampaignsQuery = (projectId: string) =>
   queryOptions({
     queryKey: ["projects", projectId, "campaigns"],
     queryFn: async (): Promise<Campaign[]> => {
-      return [
-        {
-          campaign_id: "1",
-          project_id: "1",
-          type: "email",
-          title: "Incredible Emails",
-          script: "Welcome to our email campaign!",
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-        {
-          campaign_id: "2",
-          project_id: "1",
-          title: "Undeniable Pitch",
-          type: "pitch_deck",
-          script: "Here's our pitch deck for you.",
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ];
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/project/${projectId}/campaign`
+        );
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching campaigns:", error);
+        throw new Error("Failed to fetch campaigns");
+      }
     },
   });
 
+// @TODO: getCampaignDetailQuery
 export const getCampaignDetailQuery = (campaignId: string) =>
   queryOptions({
     queryKey: ["campaigns", campaignId],
