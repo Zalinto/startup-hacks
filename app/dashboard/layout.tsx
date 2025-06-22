@@ -36,7 +36,7 @@ function DashboardSidebar() {
         title: "Projects",
         url: "/dashboard/projects",
         icon: ClipboardTextIcon,
-        items: recentProjects.data?.map((project) => ({
+        items: recentProjects.data?.map((project: { title: any; project_id: any; }) => ({
           title: project.title,
           url: `/dashboard/projects/${project.project_id}`,
         })),
