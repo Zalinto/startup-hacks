@@ -5,7 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { InfoIcon } from "@phosphor-icons/react/dist/ssr";
+import { ArrowSquareOutIcon, InfoIcon } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
 
 function Section({
   title,
@@ -25,17 +26,24 @@ function Section({
 function Document({
   title,
   description,
+  link,
 }: {
   title: string;
   description: string;
+  link: string;
 }) {
   return (
-    <Card className="mb-4">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-    </Card>
+    <Link href={link}>
+      <Card className="mb-4">
+        <CardHeader>
+          <CardTitle className="flex justify-between">
+            {title}
+            <ArrowSquareOutIcon className="text-muted-foreground" />
+          </CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
+      </Card>
+    </Link>
   );
 }
 
@@ -58,10 +66,12 @@ export default function BrainstormingSummary() {
           <Document
             title="Product Requirements Document (PRD)"
             description="Serves as a guide for teams to understand what needs to be built, why, and how success will be measured."
+            link="#"
           />
           <Document
             title="Style Guide"
             description="Defines the visual and written standards for your product, ensuring consistency in design, branding, and communication."
+            link="#"
           />
         </div>
       </Section>
