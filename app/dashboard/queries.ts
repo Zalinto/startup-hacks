@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
+import axios from "axios";
 
 export type Project = { project_id: string; title: string; created_at: string };
 
@@ -24,11 +25,17 @@ export const getProjectDetailQuery = (id?: string) =>
   queryOptions({
     queryKey: ["projects", id],
     queryFn: async () => {
-      return {
-        project_id: id!,
-        title: `Project ${id}`,
-        created_at: new Date().toISOString(),
-      } satisfies Project;
+      if (!id) {
+        throw new Error("Project ID is required");
+      }
+
+      try {
+        const response = await axios.get(`http://localhost:8080/api/project/${id}`);
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching project by ID:", error);
+        throw new Error("Failed to fetch project details");
+      }
     },
     enabled: !!id,
   });
