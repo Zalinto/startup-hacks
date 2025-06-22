@@ -17,7 +17,6 @@ import { useParams } from "next/navigation";
 
 function DashboardSidebar() {
   const params = useParams();
-  // const pathname = usePathname();
 
   const projectId = params.id as string | undefined;
 
@@ -26,12 +25,6 @@ function DashboardSidebar() {
 
   const mainItems = useMemo<SidebarItem[]>(
     () => [
-      {
-        title: "Home",
-        url: "/dashboard",
-        icon: HouseIcon,
-        matcher: (url, path) => path === url,
-      },
       {
         title: "Projects",
         url: "/dashboard/projects",
@@ -97,7 +90,4 @@ export default function DashboardLayout({
       <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   );
-}
-function useFetchProjects(): { projectById: any } {
-  throw new Error("Function not implemented.");
 }

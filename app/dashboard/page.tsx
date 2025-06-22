@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function Dashboard() {
-  return <div> hey its the dashboard</div>;
+  redirect("/dashboard/projects");
 }

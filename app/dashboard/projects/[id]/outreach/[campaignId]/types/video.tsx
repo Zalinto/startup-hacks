@@ -15,23 +15,23 @@ export default function CampaignVideoEditor({
   onSave: (script: string) => void | Promise<void>;
 }) {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  // Custom AI generation function for video script content
+
   const generateVideoScriptAIContent = async (
     prompt: string,
     selectedText?: string
   ) => {
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Stub response based on video script context
-    let generatedContent = "";
+    let text: string;
     if (selectedText) {
-      generatedContent = `Enhanced script: ${selectedText} - [AI generated video script improvement based on: "${prompt}"]`;
+      text =
+        prompt +
+        "\n\n" +
+        "Write it in a way that replaces this text: " +
+        selectedText;
     } else {
-      generatedContent = `[AI generated video script content based on prompt: "${prompt}"]`;
+      text = prompt;
     }
-
-    return generatedContent;
+    const response = await api.post<string>("/generate", { text });
+    return response.data;
   };
 
   const campaignId = useActiveCampaginId();
@@ -53,7 +53,6 @@ export default function CampaignVideoEditor({
     await onSave(content);
 
     await previewVideoMutation.mutateAsync(content);
-    // Implement your video preview logic here
   };
 
   return (

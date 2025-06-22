@@ -1,21 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { useState, useEffect } from "react";
-import {
-  TextBIcon,
-  TextItalicIcon,
-  ListBulletsIcon,
-  ListNumbersIcon,
-  QuotesIcon,
-  ArrowCounterClockwiseIcon,
-  ArrowClockwiseIcon,
-  SparkleIcon,
-  CircleNotchIcon,
-} from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -24,10 +9,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  ArrowClockwiseIcon,
+  ArrowCounterClockwiseIcon,
+  CircleNotchIcon,
+  ListBulletsIcon,
+  ListNumbersIcon,
+  QuotesIcon,
+  SparkleIcon,
+  TextBIcon,
+  TextItalicIcon,
+} from "@phosphor-icons/react";
+import { useMutation } from "@tanstack/react-query";
 import { Extension } from "@tiptap/core";
+import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { Plugin, PluginKey } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
-import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 
 const SelectionDecoration = Extension.create({
   name: "selectionDecoration",
@@ -84,7 +84,6 @@ interface WysiwygEditorProps {
 export function WysiwygEditor({
   disabled = false,
   initialContent = "<p>Start writing...</p>",
-  placeholder = "Start writing...",
   bubblePlaceholder = "Enhance this content...",
   modalTitle = "Generate Content",
   modalPlaceholder = "Write a compelling opening paragraph for...",
