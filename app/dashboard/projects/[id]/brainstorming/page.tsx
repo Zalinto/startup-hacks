@@ -82,7 +82,10 @@ export default function ProjectBrainstorming() {
               }
             }}
             variant={"outline"}
-            disabled={summarizeMutation.isPending}
+            disabled={
+              summarizeMutation.isPending ||
+              (isBrainstorming && messages.length === 0)
+            }
           >
             {isBrainstorming ? (
               <>
