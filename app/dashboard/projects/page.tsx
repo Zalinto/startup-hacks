@@ -147,19 +147,6 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 export default function MyProjects() {
-  // const { user } = useUser();
-
-  // const { projects, addProject } = useFetchProjects(user?.id ?? "");
-
-  // const [projectName, setProjectName] = useState("");
-  // const [open, setOpen] = useState(false);
-
-  // const handleCreateProject = () => {
-  //   addProject({ title: projectName });
-  //   setProjectName("");
-  //   setOpen(false);
-  // };
-
   const projects = useQuery(getProjectsQuery);
 
   return (

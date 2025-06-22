@@ -92,21 +92,12 @@ function Document({
   );
 }
 
-export default function BrainstormingSummary() {
+export default function BrainstormingSummary({ summary }: { summary: string }) {
   return (
     <div className="p-4">
       <Section title="Session Summary">
         <Card>
-          <CardContent>
-            This brainstorming session focused on generating creative ideas for
-            the new product. Key user pain points were identified, a range of
-            potential solutions was explored, and features were prioritized
-            based on impact and feasibility. The outcome includes a clear
-            product vision, a definition of core functionalities, and actionable
-            next steps for prototyping and validation. The process established a
-            strong foundation for a user-centered and market-driven product
-            strategy.
-          </CardContent>
+          <CardContent>{summary}</CardContent>
         </Card>
       </Section>
 
