@@ -18,6 +18,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { PaperPlaneTiltIcon } from "@phosphor-icons/react/dist/ssr";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
@@ -54,10 +63,11 @@ const SelectionDecoration = Extension.create({
 });
 
 export default function CampaignEmailEditor() {
-  const [isAiPopupOpen, setIsAiPopupOpen] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasSelection, setHasSelection] = useState(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [modalPrompt, setModalPrompt] = useState("");
 
   const editor = useEditor({
     extensions: [StarterKit, SelectionDecoration],
@@ -71,6 +81,7 @@ export default function CampaignEmailEditor() {
     onSelectionUpdate: ({ editor }) => {
       const { from, to } = editor.state.selection;
       setHasSelection(from !== to);
+      setAiPrompt("");
     },
   });
 
@@ -117,15 +128,26 @@ export default function CampaignEmailEditor() {
         editor.chain().focus().insertContent(generatedContent).run();
       }
 
-      setIsAiPopupOpen(false);
       setAiPrompt("");
     } catch (error) {
       console.error("AI generation failed:", error);
     }
   };
 
-  const openAIDialog = () => {
-    setIsAiPopupOpen(true);
+  const handleModalAIGenerate = async () => {
+    if (!modalPrompt.trim() || !editor) return;
+
+    try {
+      const generatedContent = await generateAIContent(modalPrompt);
+
+      // Insert at cursor position
+      editor.chain().focus().insertContent(generatedContent).run();
+
+      setModalPrompt("");
+      setIsAiModalOpen(false);
+    } catch (error) {
+      console.error("AI generation failed:", error);
+    }
   };
 
   if (!editor) {
@@ -220,6 +242,67 @@ export default function CampaignEmailEditor() {
         >
           <ArrowClockwiseIcon className="h-4 w-4" />
         </Button>
+
+        <div className="w-px h-6 bg-border mx-1" />
+
+        <Dialog open={isAiModalOpen} onOpenChange={setIsAiModalOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-foreground hover:bg-accent"
+            >
+              <SparkleIcon className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Generate Content</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <textarea
+                  id="ai-prompt"
+                  placeholder="Write a compelling opening paragraph for..."
+                  value={modalPrompt}
+                  onChange={(e) => setModalPrompt(e.target.value)}
+                  className="min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                  disabled={isGenerating}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setModalPrompt("");
+                  setIsAiModalOpen(false);
+                }}
+                disabled={isGenerating}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleModalAIGenerate}
+                disabled={!modalPrompt.trim() || isGenerating}
+              >
+                {isGenerating ? (
+                  <>
+                    <CircleNotchIcon className="h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <SparkleIcon className="h-4 w-4" />
+                    Generate
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Editor */}
@@ -246,11 +329,7 @@ export default function CampaignEmailEditor() {
               )}
             </div>
             <Input
-              placeholder={
-                hasSelection
-                  ? "Make this more persuasive..."
-                  : "Write an engaging introduction about..."
-              }
+              placeholder={"Make this more persuasive..."}
               value={aiPrompt}
               onChange={(e) => setAiPrompt(e.target.value)}
               onKeyDown={(e) => {
@@ -259,7 +338,6 @@ export default function CampaignEmailEditor() {
                   handleAIGenerate();
                 }
                 if (e.key === "Escape") {
-                  setIsAiPopupOpen(false);
                   setAiPrompt("");
                 }
               }}
