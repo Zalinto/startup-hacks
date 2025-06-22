@@ -7,14 +7,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import PageHeader from "@/components/ui/page-header";
-import {
-  LightbulbIcon,
-  MegaphoneIcon,
-  QuestionIcon,
-} from "@phosphor-icons/react/dist/ssr";
+import { QuestionIcon } from "@phosphor-icons/react/dist/ssr";
 import { useActiveProject } from "../hooks";
 
-export default function ProjectBrainstorming() {
+export default function ProjectSupport() {
   const project = useActiveProject().data;
   return (
     <>
