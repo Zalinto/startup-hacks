@@ -27,6 +27,7 @@ import {
 import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
+import { useMutation } from "@tanstack/react-query";
 
 const SelectionDecoration = Extension.create({
   name: "selectionDecoration",
@@ -66,7 +67,7 @@ interface WysiwygEditorProps {
   modalTitle?: string;
   modalPlaceholder?: string;
   onContentChange?: (content: string) => void;
-  onSave?: (content: string) => void;
+  onSave?: (content: string) => void | Promise<void>;
   onSecondaryAction?: (content: string) => void;
   saveButtonText?: string;
   secondaryButtonText?: string;
@@ -106,7 +107,7 @@ export function WysiwygEditor({
     content: initialContent,
     editorProps: {
       attributes: {
-        class: `prose dark:prose-invert mx-auto focus:outline-none p-4 [&_.selection]:bg-border [&_.selection]:py-1 selection:bg-transparent`,
+        class: `prose dark:prose-invert mx-auto focus:outline-none p-4 [&_.selection]:bg-border [&_.selection]:py-1 selection:bg-transparent max-w-none`,
         style: `min-height: ${minHeight}`,
       },
     },
@@ -194,11 +195,13 @@ export function WysiwygEditor({
     setIsGenerating(false);
   };
 
-  const handleSave = () => {
-    if (editor && onSave) {
-      onSave(editor.getHTML());
-    }
-  };
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (editor && onSave) {
+        await onSave(editor.getHTML());
+      }
+    },
+  });
 
   const handleSecondaryAction = () => {
     if (editor && onSecondaryAction) {
@@ -410,7 +413,14 @@ export function WysiwygEditor({
       {/* Actions */}
       {(onSave || onSecondaryAction) && (
         <div className="mt-4 flex gap-2">
-          {onSave && <Button onClick={handleSave}>{saveButtonText}</Button>}
+          {onSave && (
+            <Button
+              onClick={() => saveMutation.mutate()}
+              disabled={saveMutation.isPending}
+            >
+              {saveButtonText}
+            </Button>
+          )}
           {onSecondaryAction && (
             <Button variant="outline" onClick={handleSecondaryAction}>
               {secondaryButtonIcon}

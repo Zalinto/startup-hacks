@@ -1,12 +1,13 @@
-"use client";
-
-import { useState } from "react";
-import { PlayIcon } from "@phosphor-icons/react/dist/ssr";
 import { WysiwygEditor } from "@/components/ui/wysiwyg-editor";
+import { PlayIcon } from "@phosphor-icons/react/dist/ssr";
 
-export default function CampaignVideoEditor() {
-  const [scriptContent, setScriptContent] = useState("");
-
+export default function CampaignVideoEditor({
+  script,
+  onSave,
+}: {
+  script: string;
+  onSave: (script: string) => void | Promise<void>;
+}) {
   // Custom AI generation function for video script content
   const generateVideoScriptAIContent = async (
     prompt: string,
@@ -38,13 +39,13 @@ export default function CampaignVideoEditor() {
 
   return (
     <WysiwygEditor
-      initialContent="<p>Start writing your video script...</p>"
+      initialContent={script}
       placeholder="Start writing your video script..."
       bubblePlaceholder="Make this more engaging..."
       modalTitle="Generate Video Script Content"
       modalPlaceholder="Write an engaging opening for a video script about..."
-      onContentChange={setScriptContent}
-      onSave={handleSave}
+      // onContentChange={setScriptContent}
+      onSave={onSave}
       onSecondaryAction={handlePreviewVideo}
       saveButtonText="Save Script"
       secondaryButtonText="Preview Video"

@@ -15,14 +15,16 @@ import {
   PenIcon,
 } from "@phosphor-icons/react/dist/ssr";
 import { useActiveProject } from "../hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import BrainstormingChat from "./components/chat";
 import BrainstormingSummary from "./components/summary";
+import { useAuth } from "@clerk/nextjs";
 
 export default function ProjectBrainstorming() {
   const project = useActiveProject().data;
   const [isBrainstorming, setIsBrainstorming] = useState(true);
+  const auth = useAuth();
   return (
     <>
       <PageHeader
@@ -57,7 +59,6 @@ export default function ProjectBrainstorming() {
           </Button>
         }
       />
-
       {isBrainstorming && <BrainstormingChat />}
       {!isBrainstorming && <BrainstormingSummary />}
     </>

@@ -1,12 +1,13 @@
-"use client";
-
-import { useState } from "react";
-import { PaperPlaneTiltIcon } from "@phosphor-icons/react/dist/ssr";
 import { WysiwygEditor } from "@/components/ui/wysiwyg-editor";
+import { PaperPlaneTiltIcon } from "@phosphor-icons/react/dist/ssr";
 
-export default function CampaignEmailEditor() {
-  const [emailContent, setEmailContent] = useState("");
-
+export default function CampaignEmailEditor({
+  script,
+  onSave,
+}: {
+  script: string;
+  onSave: (script: string) => void | Promise<void>;
+}) {
   // Custom AI generation function for email content
   const generateEmailAIContent = async (
     prompt: string,
@@ -26,25 +27,19 @@ export default function CampaignEmailEditor() {
     return generatedContent;
   };
 
-  const handleSave = (content: string) => {
-    console.log("Saving email draft:", content);
-    // Implement your save logic here
-  };
-
   const handleSendEmail = (content: string) => {
-    console.log("Sending email:", content);
-    // Implement your send email logic here
+    alert("TODO: Send email with content.");
   };
 
   return (
     <WysiwygEditor
-      initialContent="<p>Start writing your email campaign...</p>"
+      initialContent={script}
       placeholder="Start writing your email campaign..."
       bubblePlaceholder="Make this more persuasive..."
       modalTitle="Generate Email Content"
       modalPlaceholder="Write a compelling opening paragraph for an email campaign..."
-      onContentChange={setEmailContent}
-      onSave={handleSave}
+      // onContentChange={setEmailContent}
+      onSave={onSave}
       onSecondaryAction={handleSendEmail}
       saveButtonText="Save Draft"
       secondaryButtonText="Send Email"

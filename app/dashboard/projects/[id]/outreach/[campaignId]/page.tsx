@@ -19,11 +19,38 @@ import React from "react";
 import CampaignEmailEditor from "./types/email";
 import CampaignVideoEditor from "./types/video";
 import CampaignPitchdeckEditor from "./types/pitchdeck";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getCampaignDetailQuery } from "../queries";
+import { api } from "@/app/providers";
+import { toast } from "sonner";
 
 export default function OutreachCampaignDetail() {
   const project = useActiveProject().data;
   const campaign = useActiveCampaign().data;
 
+  const queryClient = useQueryClient();
+  const saveMutation = useMutation({
+    mutationFn: async (script: string) => {
+      await api.put(`/campaign/${campaign!.campaign_id}`, {
+        type: campaign!.type,
+        script,
+        title: campaign!.title,
+        status: campaign!.status,
+      });
+    },
+    onSuccess: () => {
+      toast.success("Campaign saved successfully!");
+
+      queryClient.invalidateQueries({
+        queryKey: getCampaignDetailQuery(campaign!.campaign_id).queryKey,
+      });
+    },
+  });
+  const onSave = async (script: string) => {
+    // console.log("Saving script:", script);
+    await saveMutation.mutateAsync(script);
+    // Implement your save logic here
+  };
   return (
     <>
       <PageHeader
@@ -35,7 +62,7 @@ export default function OutreachCampaignDetail() {
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
                   <Link
-                    href={`/dashboard/projects/${project?.id}/outreach`}
+                    href={`/dashboard/projects/${project?.project_id}/outreach`}
                     className="line-clamp-1 flex gap-2 items-center"
                   >
                     <MegaphoneIcon />
@@ -59,9 +86,13 @@ export default function OutreachCampaignDetail() {
           </Breadcrumb>
         }
       />
-      {campaign?.type === "email" && <CampaignEmailEditor />}
+      {campaign?.type === "email" && (
+        <CampaignEmailEditor script={campaign.script} onSave={onSave} />
+      )}
+      {campaign?.type === "scripted_video" && (
+        <CampaignVideoEditor script={campaign.script} onSave={onSave} />
+      )}
       {campaign?.type === "pitch_deck" && <CampaignPitchdeckEditor />}
-      {campaign?.type === "scripted_video" && <CampaignVideoEditor />}
     </>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import { CAMPAIGN_TYPE_LABELS } from "@/app/constants";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -39,22 +40,19 @@ import {
 } from "@/components/ui/table";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import {
-  EnvelopeIcon,
   MegaphoneIcon,
   PencilIcon,
   PlusIcon,
-  ProjectorScreenIcon,
-  VideoIcon,
 } from "@phosphor-icons/react/dist/ssr";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import { useActiveProject, useActiveProjectId } from "../hooks";
-import { getCampaignsQuery, useCreateCampaign } from "./queries";
-import { CAMPAIGN_TYPE_LABELS } from "@/app/constants";
-import axios from "axios";
+import { getCampaignsQuery } from "./queries";
+import { api } from "@/app/providers";
+import { toast } from "sonner";
 
 const newCampaignSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -70,24 +68,31 @@ function StartNewDialog() {
     },
   });
 
+  const queryClient = useQueryClient();
+  const projectId = useActiveProjectId();
+  const createMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof newCampaignSchema>) => {
+      await api.post(`/project/${projectId}/campaign`, {
+        ...data,
+        script: "",
+        status: "draft",
+      });
+    },
+    onSuccess: () => {
+      toast.success("Campaign created successfully!");
+      queryClient.invalidateQueries({
+        queryKey: getCampaignsQuery(projectId).queryKey,
+      });
+    },
+  });
+
   const [open, setOpen] = useState(false);
-  const projectId = useActiveProjectId(); // Get the active project ID
-  const createCompaign = useCreateCampaign(projectId);
 
   useEffect(() => {
     if (open) {
       form.reset();
     }
   }, [open]);
-
-  const handleCreateCampaign = (data: z.infer<typeof newCampaignSchema>) => {
-    createCompaign.mutate(data, {
-      onSuccess: () => {
-        alert("Campaign created successfully!");
-        setOpen(false);
-      },
-    });
-  };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -106,8 +111,9 @@ function StartNewDialog() {
         </AlertDialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((data) => {
-              handleCreateCampaign(data);
+            onSubmit={form.handleSubmit(async (data) => {
+              await createMutation.mutateAsync(data);
+              setOpen(false);
             })}
           >
             <div className="grid gap-4">
@@ -147,9 +153,14 @@ function StartNewDialog() {
                   </FormItem>
                 )}
               />
-              <AlertDialogFooter className="">
+              <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <Button type="submit" disabled={!form.formState.isValid}>
+                <Button
+                  type="submit"
+                  disabled={
+                    !form.formState.isValid || form.formState.isSubmitting
+                  }
+                >
                   Create
                 </Button>
               </AlertDialogFooter>

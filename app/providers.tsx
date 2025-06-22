@@ -1,5 +1,7 @@
 "use client";
 
+import axios from 'axios'
+import { useAuth, useClerk } from '@clerk/nextjs'
 import {
   isServer,
   QueryClient,
@@ -42,8 +44,11 @@ export function ThemeProvider({
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 
+// Bad hack to get Clerk auth instance
+export let clerkAuth: ReturnType<typeof useAuth> = null as any; 
 export function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
+  clerkAuth = useAuth()
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -51,3 +56,20 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </QueryClientProvider>
   );
 }
+
+
+export const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL + '/api',
+  headers: {
+    "Content-Type": "application/json",
+  },
+})
+api.interceptors.request.use(async (config) => {
+  if (clerkAuth) {
+    const token = await clerkAuth.getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});

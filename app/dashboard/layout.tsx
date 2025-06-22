@@ -36,10 +36,12 @@ function DashboardSidebar() {
         title: "Projects",
         url: "/dashboard/projects",
         icon: ClipboardTextIcon,
-        items: recentProjects.data?.map((project: { title: any; project_id: any; }) => ({
-          title: project.title,
-          url: `/dashboard/projects/${project.project_id}`,
-        })),
+        items: recentProjects.data?.map(
+          (project: { title: any; project_id: any }) => ({
+            title: project.title,
+            url: `/dashboard/projects/${project.project_id}`,
+          })
+        ),
       },
     ],
     [recentProjects.data]
@@ -55,26 +57,26 @@ function DashboardSidebar() {
         matcher: () => false,
       },
       {
-        title: projectDetail.data[0].title,
-        url: `/dashboard/projects/${projectDetail.data[0].project_id}/brainstorming`,
+        title: projectDetail.data.title,
+        url: `/dashboard/projects/${projectDetail.data.project_id}/brainstorming`,
         icon: ClipboardTextIcon,
         matcher: () => false,
         items: [
           {
             icon: LightbulbIcon,
             title: "Brainstorming",
-            url: `/dashboard/projects/${projectDetail.data[0].project_id}/brainstorming`,
+            url: `/dashboard/projects/${projectDetail.data.project_id}/brainstorming`,
           },
           {
             icon: MegaphoneIcon,
 
             title: "Outreach",
-            url: `/dashboard/projects/${projectDetail.data[0].project_id}/outreach`,
+            url: `/dashboard/projects/${projectDetail.data.project_id}/outreach`,
           },
           {
             icon: QuestionIcon,
             title: "Customer Support",
-            url: `/dashboard/projects/${projectDetail.data[0].project_id}/support`,
+            url: `/dashboard/projects/${projectDetail.data.project_id}/support`,
           },
         ],
       },
@@ -96,7 +98,6 @@ export default function DashboardLayout({
     </SidebarProvider>
   );
 }
-function useFetchProjects(): { projectById: any; } {
+function useFetchProjects(): { projectById: any } {
   throw new Error("Function not implemented.");
 }
-
