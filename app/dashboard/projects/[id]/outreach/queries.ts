@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 export type Campaign = {
@@ -15,31 +16,48 @@ export const getCampaignsQuery = (projectId: string) =>
   queryOptions({
     queryKey: ["projects", projectId, "campaigns"],
     queryFn: async (): Promise<Campaign[]> => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/project/${projectId}/campaign`
-        );
-        return response.data;
-      } catch (error) {
-        console.error("Error fetching campaigns:", error);
+      const response = await fetch(
+        `http://localhost:8080/api/project/${projectId}/campaign`
+      );
+      if (!response.ok) {
         throw new Error("Failed to fetch campaigns");
       }
+      return response.json();
     },
   });
 
-// @TODO: getCampaignDetailQuery
 export const getCampaignDetailQuery = (campaignId: string) =>
   queryOptions({
     queryKey: ["campaigns", campaignId],
     queryFn: async (): Promise<Campaign> => {
-      return {
-        campaign_id: campaignId,
-        project_id: "1",
-        type: "scripted_video",
-        title: "Incredible Emails",
-        script: "Welcome to our email campaign!",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+      const response = await fetch(
+        `http://localhost:8080/api/campaign/${campaignId}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch campaign details");
+      }
+
+      return response.json();
     },
   });
+  
+  export const useCreateCampaign = (projectId: string) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: async (data: { title: string; type: "email" | "pitch_deck" | "scripted_video" }) => {
+        const response = await axios.post(
+          `http://localhost:8080/api/project/${projectId}/campaign`,
+          {
+            title: data.title,
+            type: data.type,
+          }
+        );
+        return response.data;
+      },
+      onSuccess: () => {
+        // Invalidate the campaigns query to refetch the updated list
+        queryClient.invalidateQueries({ queryKey: ["projects", projectId, "campaigns"] });
+      },
+    });
+  };

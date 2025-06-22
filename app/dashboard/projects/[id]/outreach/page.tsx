@@ -52,8 +52,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
 import { useActiveProject, useActiveProjectId } from "../hooks";
-import { getCampaignsQuery } from "./queries";
+import { getCampaignsQuery, useCreateCampaign } from "./queries";
 import { CAMPAIGN_TYPE_LABELS } from "@/app/constants";
+import axios from "axios";
 
 const newCampaignSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -65,15 +66,29 @@ function StartNewDialog() {
     resolver: standardSchemaResolver(newCampaignSchema),
     defaultValues: {
       title: "",
+      type: "email", // Default campaign type
     },
   });
 
   const [open, setOpen] = useState(false);
+  const projectId = useActiveProjectId(); // Get the active project ID
+  const createCompaign = useCreateCampaign(projectId);
+
   useEffect(() => {
     if (open) {
       form.reset();
     }
   }, [open]);
+
+  const handleCreateCampaign = (data: z.infer<typeof newCampaignSchema>) => {
+    createCompaign.mutate(data, {
+      onSuccess: () => {
+        alert("Campaign created successfully!");
+        setOpen(false);
+      },
+    });
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
@@ -92,10 +107,7 @@ function StartNewDialog() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((data) => {
-              // console.log("Form submitted with data:", data);
-              alert("TODO: Create campaign with data: " + JSON.stringify(data));
-              // TODO: submit campaign settings and navigate to campaign detail.
-              setOpen(false);
+              handleCreateCampaign(data);
             })}
           >
             <div className="grid gap-4">
