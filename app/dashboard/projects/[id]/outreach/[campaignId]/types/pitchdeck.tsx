@@ -48,7 +48,7 @@ export default function CampaignPitchdeckEditor() {
       onSecondaryAction={handleGenerateSlides}
       saveButtonText="Save Draft"
       secondaryButtonText="Generate Slides"
-      secondaryButtonIcon={<PresentationChartIcon className="h-4 w-4 mr-2" />}
+      secondaryButtonIcon={<PresentationChartIcon />}
       generateAIContent={generatePitchDeckAIContent}
       minHeight="400px"
     />

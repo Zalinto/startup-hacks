@@ -48,7 +48,7 @@ export default function CampaignVideoEditor() {
       onSecondaryAction={handlePreviewVideo}
       saveButtonText="Save Script"
       secondaryButtonText="Preview Video"
-      secondaryButtonIcon={<PlayIcon className="h-4 w-4 mr-2" />}
+      secondaryButtonIcon={<PlayIcon />}
       generateAIContent={generateVideoScriptAIContent}
       minHeight="400px"
     />

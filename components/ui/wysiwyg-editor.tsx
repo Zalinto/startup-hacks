@@ -146,6 +146,7 @@ export function WysiwygEditor({
 
   const handleAIGenerate = async () => {
     if (!aiPrompt.trim() || !editor) return;
+    setIsGenerating(true);
 
     const { from, to } = editor.state.selection;
     const selectedText = hasSelection
@@ -172,10 +173,12 @@ export function WysiwygEditor({
     } catch (error) {
       console.error("AI generation failed:", error);
     }
+    setIsGenerating(false);
   };
 
   const handleModalAIGenerate = async () => {
     if (!modalPrompt.trim() || !editor) return;
+    setIsGenerating(true);
 
     try {
       const generatedContent = await aiGenerateFunction(modalPrompt);
@@ -188,6 +191,7 @@ export function WysiwygEditor({
     } catch (error) {
       console.error("AI generation failed:", error);
     }
+    setIsGenerating(false);
   };
 
   const handleSave = () => {

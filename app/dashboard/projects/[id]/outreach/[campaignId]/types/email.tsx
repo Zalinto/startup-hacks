@@ -48,7 +48,7 @@ export default function CampaignEmailEditor() {
       onSecondaryAction={handleSendEmail}
       saveButtonText="Save Draft"
       secondaryButtonText="Send Email"
-      secondaryButtonIcon={<PaperPlaneTiltIcon className="h-4 w-4 mr-2" />}
+      secondaryButtonIcon={<PaperPlaneTiltIcon />}
       generateAIContent={generateEmailAIContent}
       minHeight="300px"
     />

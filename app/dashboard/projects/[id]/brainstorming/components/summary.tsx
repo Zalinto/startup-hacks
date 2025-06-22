@@ -6,10 +6,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DownloadSimpleIcon, FileIcon } from "@phosphor-icons/react/dist/ssr";
-import { DocumentProps, PDFDownloadLink } from "@react-pdf/renderer";
-import { ProductRequirementsDocument } from "../templates/prd";
-import { StyleGuideDocument } from "../templates/style-guide";
+import {
+  DownloadSimpleIcon,
+  EyeIcon,
+  FileIcon,
+} from "@phosphor-icons/react/dist/ssr";
+import { DocumentProps, PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import ProductRequirementsDocument from "../templates/prd";
+import BrandGuidelinesDocument from "../templates/style-guide";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 function Section({
   title,
@@ -47,7 +59,24 @@ function Document({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       {pdf && (
-        <CardContent>
+        <CardContent className="flex gap-4">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="secondary">
+                <EyeIcon /> View PDF
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="min-w-[calc(100%_-_32px)] h-[calc(100vh_-_32px)] flex flex-col">
+              <div className="block flex-1 -m-6 mb-0">
+                <PDFViewer className="block w-full h-full rounded-sm overflow-clip ">
+                  {pdf}
+                </PDFViewer>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Close</AlertDialogCancel>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button asChild variant="secondary">
             <PDFDownloadLink
               document={pdf}
@@ -87,7 +116,7 @@ export default function BrainstormingSummary() {
           <Document
             title="Style Guide"
             description="Defines the visual and written standards for your product, ensuring consistency in design, branding, and communication."
-            pdf={<StyleGuideDocument />}
+            pdf={<BrandGuidelinesDocument />}
           />
         </div>
       </Section>
