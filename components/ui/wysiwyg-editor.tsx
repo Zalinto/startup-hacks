@@ -61,6 +61,7 @@ const SelectionDecoration = Extension.create({
 });
 
 interface WysiwygEditorProps {
+  disabled?: boolean;
   initialContent?: string;
   placeholder?: string;
   bubblePlaceholder?: string;
@@ -81,6 +82,7 @@ interface WysiwygEditorProps {
 }
 
 export function WysiwygEditor({
+  disabled = false,
   initialContent = "<p>Start writing...</p>",
   placeholder = "Start writing...",
   bubblePlaceholder = "Enhance this content...",
@@ -93,7 +95,7 @@ export function WysiwygEditor({
   secondaryButtonText = "Send",
   secondaryButtonIcon,
   generateAIContent,
-  className = "w-full max-w-4xl mx-auto",
+  className = "w-full",
   minHeight = "300px",
 }: WysiwygEditorProps) {
   const [aiPrompt, setAiPrompt] = useState("");
@@ -416,13 +418,17 @@ export function WysiwygEditor({
           {onSave && (
             <Button
               onClick={() => saveMutation.mutate()}
-              disabled={saveMutation.isPending}
+              disabled={saveMutation.isPending || disabled}
             >
               {saveButtonText}
             </Button>
           )}
           {onSecondaryAction && (
-            <Button variant="outline" onClick={handleSecondaryAction}>
+            <Button
+              variant="outline"
+              onClick={handleSecondaryAction}
+              disabled={disabled}
+            >
               {secondaryButtonIcon}
               {secondaryButtonText}
             </Button>

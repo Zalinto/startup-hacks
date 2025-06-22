@@ -86,13 +86,15 @@ export default function OutreachCampaignDetail() {
           </Breadcrumb>
         }
       />
-      {campaign?.type === "email" && (
-        <CampaignEmailEditor script={campaign.script} onSave={onSave} />
-      )}
-      {campaign?.type === "scripted_video" && (
-        <CampaignVideoEditor script={campaign.script} onSave={onSave} />
-      )}
-      {campaign?.type === "pitch_deck" && <CampaignPitchdeckEditor />}
+      <div className="p-4">
+        {campaign?.type === "email" && (
+          <CampaignEmailEditor script={campaign.script} onSave={onSave} />
+        )}
+        {campaign?.type === "scripted_video" && (
+          <CampaignVideoEditor script={campaign.script} onSave={onSave} />
+        )}
+        {campaign?.type === "pitch_deck" && <CampaignPitchdeckEditor />}
+      </div>
     </>
   );
 }
