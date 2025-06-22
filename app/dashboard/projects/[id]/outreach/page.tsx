@@ -1,9 +1,13 @@
 "use client";
 import {
-  AlertDialogAction,
+  AlertDialog,
   AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
   Breadcrumb,
@@ -21,65 +25,40 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import IconSelect from "@/components/ui/icon-select";
 import { Input } from "@/components/ui/input";
 import PageHeader from "@/components/ui/page-header";
-import { cn } from "@/lib/utils";
+import Section from "@/components/ui/section";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Icon } from "@phosphor-icons/react";
 import {
   EnvelopeIcon,
   MegaphoneIcon,
+  PencilIcon,
   PlusIcon,
   ProjectorScreenIcon,
   VideoIcon,
 } from "@phosphor-icons/react/dist/ssr";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
-import { useActiveProject } from "../hooks";
-import { useEffect, useState } from "react";
+import { useActiveProject, useActiveProjectId } from "../hooks";
+import { getCampaignsQuery } from "./queries";
+import { CAMPAIGN_TYPE_LABELS } from "@/app/constants";
 
 const newCampaignSchema = z.object({
   title: z.string().min(1, "Title is required"),
   type: z.enum(["email", "pitch_deck", "scripted_video"]),
 });
-
-function OptionSelect({
-  options,
-  value,
-  onChange,
-}: {
-  options: { label: string; value: string; icon: Icon }[];
-  value: string | null;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div className="grid grid-flow-col auto-cols-fr gap-2">
-      {options.map((option) => (
-        <button
-          type="button"
-          key={option.value}
-          onClick={() => onChange(option.value)}
-          className={cn(
-            "flex flex-col items-center gap-2 p-4 rounded-md border border-input transition-colors",
-            value === option.value
-              ? "bg-accent border-accent-foreground text-foreground"
-              : "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
-          )}
-        >
-          <option.icon size={24} />
-          <span className="text-sm">{option.label}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
 
 function StartNewDialog() {
   const form = useForm<z.infer<typeof newCampaignSchema>>({
@@ -113,7 +92,8 @@ function StartNewDialog() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((data) => {
-              console.log("Form submitted with data:", data);
+              // console.log("Form submitted with data:", data);
+              alert("TODO: Create campaign with data: " + JSON.stringify(data));
               // TODO: submit campaign settings and navigate to campaign detail.
               setOpen(false);
             })}
@@ -139,24 +119,14 @@ function StartNewDialog() {
                   <FormItem>
                     <FormLabel>Campaign Type</FormLabel>
                     <FormControl>
-                      <OptionSelect
-                        options={[
-                          {
-                            label: "Email",
-                            value: "email",
-                            icon: EnvelopeIcon,
-                          },
-                          {
-                            label: "Video",
-                            value: "scripted_video",
-                            icon: VideoIcon,
-                          },
-                          {
-                            label: "Pitch Deck",
-                            value: "pitch_deck",
-                            icon: ProjectorScreenIcon,
-                          },
-                        ]}
+                      <IconSelect
+                        options={["email", "scripted_video", "pitch_deck"].map(
+                          (type) => ({
+                            label: CAMPAIGN_TYPE_LABELS[type].label,
+                            value: type,
+                            icon: CAMPAIGN_TYPE_LABELS[type].icon,
+                          })
+                        )}
                         value={field.value ?? null}
                         onChange={field.onChange}
                       />
@@ -179,6 +149,70 @@ function StartNewDialog() {
   );
 }
 
+function CampaignsTable() {
+  const projectId = useActiveProjectId();
+  const campaigns = useQuery(getCampaignsQuery(projectId));
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Title</TableHead>
+          <TableHead>Type</TableHead>
+          <TableHead>Created</TableHead>
+          <TableHead className="w-0" />
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {campaigns.isLoading && (
+          <TableRow>
+            <TableCell
+              colSpan={4}
+              className="text-center text-muted-foreground"
+            >
+              Loading campaigns...
+            </TableCell>
+          </TableRow>
+        )}
+        {campaigns.data?.map((campaign) => (
+          <TableRow key={campaign.campaign_id}>
+            <TableHead>
+              <Link
+                href={`/dashboard/projects/${projectId}/outreach/${campaign.campaign_id}`}
+              >
+                {campaign.title}
+              </Link>
+            </TableHead>
+            <TableCell>{CAMPAIGN_TYPE_LABELS[campaign.type].label}</TableCell>
+            <TableCell>
+              {new Date(campaign.created_at).toLocaleDateString()}
+            </TableCell>
+            <TableCell>
+              <Button size="icon" variant="outline" asChild>
+                <Link
+                  href={`/dashboard/projects/${projectId}/outreach/${campaign.campaign_id}`}
+                >
+                  <PencilIcon />
+                </Link>
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))}
+        {campaigns.data?.length === 0 && (
+          <TableRow>
+            <TableCell
+              colSpan={4}
+              className="text-center text-muted-foreground"
+            >
+              No campaigns found. Start a new one!
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  );
+}
+
 export default function ProjectOutreach() {
   const project = useActiveProject().data;
   return (
@@ -198,6 +232,11 @@ export default function ProjectOutreach() {
         }
         nav={<StartNewDialog />}
       />
+      <div className="p-4">
+        <Section title="Campaigns">
+          <CampaignsTable />
+        </Section>
+      </div>
     </>
   );
 }
