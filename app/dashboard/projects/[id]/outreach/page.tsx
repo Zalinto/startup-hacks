@@ -53,6 +53,8 @@ import { useActiveProject, useActiveProjectId } from "../hooks";
 import { getCampaignsQuery } from "./queries";
 import { api } from "@/app/providers";
 import { toast } from "sonner";
+import { ImpressionsChart } from "./components/impressions";
+import { CTRChart } from "./components/ctr";
 
 const newCampaignSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -172,6 +174,15 @@ function StartNewDialog() {
   );
 }
 
+function AnalyticsCharts() {
+  return (
+    <div className="grid grid-cols-2 gap-4 mb-4">
+      <ImpressionsChart />
+      <CTRChart />
+    </div>
+  );
+}
+
 function CampaignsTable() {
   const projectId = useActiveProjectId();
   const campaigns = useQuery(getCampaignsQuery(projectId));
@@ -256,6 +267,7 @@ export default function ProjectOutreach() {
         nav={<StartNewDialog />}
       />
       <div className="p-4">
+        <AnalyticsCharts />
         <Section title="Campaigns">
           <CampaignsTable />
         </Section>
