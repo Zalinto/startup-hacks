@@ -44,7 +44,7 @@ export const getCampaignDetailQuery = (campaignId: string) =>
       return {
         campaign_id: campaignId,
         project_id: "1",
-        type: "email",
+        type: "scripted_video",
         title: "Incredible Emails",
         script: "Welcome to our email campaign!",
         created_at: new Date().toISOString(),

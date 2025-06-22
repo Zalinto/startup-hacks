@@ -1,7 +1,56 @@
+"use client";
+
+import { useState } from "react";
+import { PlayIcon } from "@phosphor-icons/react/dist/ssr";
+import { WysiwygEditor } from "@/components/ui/wysiwyg-editor";
+
 export default function CampaignVideoEditor() {
+  const [scriptContent, setScriptContent] = useState("");
+
+  // Custom AI generation function for video script content
+  const generateVideoScriptAIContent = async (
+    prompt: string,
+    selectedText?: string
+  ) => {
+    // Simulate API call delay
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Stub response based on video script context
+    let generatedContent = "";
+    if (selectedText) {
+      generatedContent = `Enhanced script: ${selectedText} - [AI generated video script improvement based on: "${prompt}"]`;
+    } else {
+      generatedContent = `[AI generated video script content based on prompt: "${prompt}"]`;
+    }
+
+    return generatedContent;
+  };
+
+  const handleSave = (content: string) => {
+    console.log("Saving video script draft:", content);
+    // Implement your save logic here
+  };
+
+  const handlePreviewVideo = (content: string) => {
+    console.log("Previewing video script:", content);
+    // Implement your video preview logic here
+  };
+
   return (
-    <div>
-      <h2>Video Campaign Editor</h2>
-    </div>
+    <WysiwygEditor
+      initialContent="<p>Start writing your video script...</p>"
+      placeholder="Start writing your video script..."
+      bubblePlaceholder="Make this more engaging..."
+      modalTitle="Generate Video Script Content"
+      modalPlaceholder="Write an engaging opening for a video script about..."
+      onContentChange={setScriptContent}
+      onSave={handleSave}
+      onSecondaryAction={handlePreviewVideo}
+      saveButtonText="Save Script"
+      secondaryButtonText="Preview Video"
+      secondaryButtonIcon={<PlayIcon className="h-4 w-4 mr-2" />}
+      generateAIContent={generateVideoScriptAIContent}
+      minHeight="400px"
+    />
   );
 }
