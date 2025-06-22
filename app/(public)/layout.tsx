@@ -18,7 +18,8 @@ export default function PublicLayout({
     <>
       <nav className="fixed w-screen z-20">
         <div className="max-w-7xl mx-auto px-4 w-full flex justify-between h-[64px] items-center">
-          <a href="/" className="font-bold text-2xl">
+          <a href="/" className="font-bold text-2xl flex items-center gap-4">
+            <img src="/favicon.png" className="h-8 w-8" />
             Zeroto
           </a>
           <div className="flex gap-4 items-center">
@@ -31,7 +32,7 @@ export default function PublicLayout({
               </div>
             </SignedIn>
             <SignedOut>
-              <SignInButton mode="modal" fallbackRedirectUrl={"/dashboard"} >
+              <SignInButton mode="modal" fallbackRedirectUrl={"/dashboard"}>
                 <Button className="cursor-pointer">Sign In</Button>
               </SignInButton>
             </SignedOut>

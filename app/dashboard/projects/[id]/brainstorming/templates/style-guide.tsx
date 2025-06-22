@@ -288,7 +288,7 @@ const BrandGuidelinesDocument = ({
         ))}
       </Section>
       <Text fixed style={styles.footer}>
-        Generated with Zero.to
+        Generated with Zeroto
       </Text>
     </Page>
   </Document>

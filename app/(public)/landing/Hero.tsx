@@ -2,6 +2,7 @@ import React from "react";
 // import { Safari } from "@/components/magicui/safari";
 import { HeroVideoDialog } from "@/components/magicui/hero-video-dialog";
 import { Particles } from "@/components/magicui/particles";
+import { SignInButton } from "@clerk/nextjs";
 
 const Hero = () => {
   return (
@@ -16,7 +17,7 @@ const Hero = () => {
       <div className="flex flex-col gap-8 w-full mx-auto max-w-7xl text-center">
         {/* Headline */}
         <h1 className="text-white font-bold text-5xl sm:text-7xl">
-          Build Zeroto: From Idea to <br /> Launch in Minutes
+          Build with Zeroto: From Idea to <br /> Launch in Minutes
         </h1>
         {/* Description */}
         <p className="text-lg sm:text-xl text-white">
@@ -26,16 +27,17 @@ const Hero = () => {
 
         {/* CTA */}
         <div className="flex justify-center gap-5 w-full">
-          <a
-            href="/"
-            className="
+          <SignInButton mode="modal" fallbackRedirectUrl="/dashboard">
+            <button
+              className="
                 bg-white hover:bg-white/90 text-black border-white
                     border shadow-none font-bold text-lg sm:text-xl px-10 py-3 rounded-md 
                     transition duration-200
                 "
-          >
-            Get Started for Free
-          </a>
+            >
+              Get Started for Free
+            </button>
+          </SignInButton>
         </div>
         {/* Video */}
         <div className="relative mt-8">

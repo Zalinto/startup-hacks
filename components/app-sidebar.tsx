@@ -39,7 +39,10 @@ export function AppSidebar({ items }: { items: SidebarItem[] }) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="p-2">
-            <h1 className="font-bold text-lg">Startup Hacks</h1>
+            <h1 className="font-bold text-lg flex gap-3 items-center">
+              <img src="/favicon.png" className="w-8 h-8 block" />
+              Zeroto
+            </h1>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

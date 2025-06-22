@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Startup Hacks",
+  title: "Zeroto",
 };
 
 export default function RootLayout({
