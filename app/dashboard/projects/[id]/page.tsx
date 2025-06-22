@@ -1,3 +1,7 @@
+"use client";
+import { redirect, usePathname } from "next/navigation";
+
 export default function ProjectDetail() {
-  return <div>hey its a project</div>;
+  const pathname = usePathname();
+  redirect(`${pathname}/brainstorming`);
 }

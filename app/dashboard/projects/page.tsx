@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import PageHeader from "@/components/ui/page-header";
 import { PlusIcon } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
-import { getProjectsQuery, Project } from "./queries";
+import { getProjectsQuery, Project } from "../queries";
 import {
   Card,
   CardDescription,

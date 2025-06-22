@@ -19,3 +19,16 @@ export const getProjectsQuery = queryOptions({
     ] satisfies Project[];
   },
 });
+
+export const getProjectDetailQuery = (id?: string) =>
+  queryOptions({
+    queryKey: ["projects", id],
+    queryFn: async () => {
+      return {
+        id: id!,
+        title: `Project ${id}`,
+        created_at: new Date().toISOString(),
+      } satisfies Project;
+    },
+    enabled: !!id,
+  });

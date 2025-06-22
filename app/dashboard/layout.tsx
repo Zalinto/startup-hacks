@@ -1,99 +1,87 @@
 "use client";
 
+import { AppSidebar, SidebarItem } from "@/components/app-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
-import { UserButton } from "@clerk/nextjs";
-import { Icon } from "@phosphor-icons/react";
-import { ClipboardTextIcon, HouseIcon } from "@phosphor-icons/react/dist/ssr";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-
-const items: {
-  title: string;
-  url: string;
-  icon: Icon;
-  isActive?: boolean;
-  matcher?: (url: string, path: string) => boolean;
-}[] = [
-  {
-    title: "Home",
-    url: "/dashboard",
-    icon: HouseIcon,
-    matcher: (url, path) => path === url,
-  },
-  { title: "Projects", url: "/dashboard/projects", icon: ClipboardTextIcon },
-];
+  CaretLeftIcon,
+  ClipboardTextIcon,
+  HouseIcon,
+  LightbulbIcon,
+  MegaphoneIcon,
+  QuestionIcon,
+} from "@phosphor-icons/react/dist/ssr";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { getProjectDetailQuery, getProjectsQuery } from "./queries";
+import { useParams, usePathname } from "next/navigation";
 
 function DashboardSidebar() {
-  const active = usePathname();
-  return (
-    <Sidebar>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem className="p-2">
-            <h1 className="font-bold text-lg">Startup Hacks</h1>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={
-                      item.matcher
-                        ? item.matcher(item.url, active)
-                        : active.startsWith(item.url)
-                    }
-                  >
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem className="p-2">
-            <UserButton
-              showName
-              appearance={{
-                elements: {
-                  rootBox: {
-                    width: "100%",
-                    flex: 1,
-                    display: "flex",
-                  },
-                  userButtonBox: {
-                    flexDirection: "row-reverse",
-                  },
-                },
-              }}
-            />
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-    </Sidebar>
+  const params = useParams();
+  const pathname = usePathname();
+
+  const projectId = params.id as string | undefined;
+
+  const projectDetail = useQuery(getProjectDetailQuery(projectId));
+  const recentProjects = useQuery(getProjectsQuery);
+
+  const mainItems = useMemo<SidebarItem[]>(
+    () => [
+      {
+        title: "Home",
+        url: "/dashboard",
+        icon: HouseIcon,
+        matcher: (url, path) => path === url,
+      },
+      {
+        title: "Projects",
+        url: "/dashboard/projects",
+        icon: ClipboardTextIcon,
+        items: recentProjects.data?.map((project) => ({
+          title: project.title,
+          url: `/dashboard/projects/${project.id}`,
+        })),
+      },
+    ],
+    [recentProjects.data]
   );
+
+  const projectDetailItems = useMemo<SidebarItem[]>(() => {
+    if (!projectDetail.data) return [];
+    return [
+      {
+        title: "All Projects",
+        icon: CaretLeftIcon,
+        url: "/dashboard/projects",
+        matcher: () => false,
+      },
+      {
+        title: projectDetail.data.title,
+        url: `/dashboard/projects/${projectDetail.data.id}/brainstorming`,
+        icon: ClipboardTextIcon,
+        matcher: () => false,
+        items: [
+          {
+            icon: LightbulbIcon,
+            title: "Brainstorming",
+            url: `/dashboard/projects/${projectDetail.data.id}/brainstorming`,
+          },
+          {
+            icon: MegaphoneIcon,
+
+            title: "Outreach",
+            url: `/dashboard/projects/${projectDetail.data.id}/outreach`,
+          },
+          {
+            icon: QuestionIcon,
+            title: "Customer Support",
+            url: `/dashboard/projects/${projectDetail.data.id}/support`,
+          },
+        ],
+      },
+    ];
+  }, [projectDetail.data]);
+
+  return <AppSidebar items={projectId ? projectDetailItems : mainItems} />;
 }
 
 export default function DashboardLayout({
