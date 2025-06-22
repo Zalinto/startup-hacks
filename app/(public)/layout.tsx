@@ -16,7 +16,7 @@ export default function PublicLayout({
 }>) {
   return (
     <>
-      <nav className="fixed w-screen">
+      <nav className="fixed w-screen z-20">
         <div className="max-w-7xl mx-auto px-4 w-full flex justify-between h-[64px] items-center">
           <a href="/" className="font-bold text-2xl">
             Zeroto
@@ -26,13 +26,13 @@ export default function PublicLayout({
               <Button asChild>
                 <Link href="/dashboard">Go to Dashboard</Link>
               </Button>
-              <div className="w-[28px] h-[28px]">
+              <div className="w-[28px] h-[28px] hover:cursor-pointer">
                 <UserButton />
               </div>
             </SignedIn>
             <SignedOut>
-              <SignInButton mode="modal" fallbackRedirectUrl={"/dashboard"}>
-                <Button>Sign In</Button>
+              <SignInButton mode="modal" fallbackRedirectUrl={"/dashboard"} >
+                <Button className="cursor-pointer">Sign In</Button>
               </SignInButton>
             </SignedOut>
           </div>

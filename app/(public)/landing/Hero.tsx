@@ -60,7 +60,7 @@ const Hero = () => {
         className="
           pointer-events-none
           absolute inset-x-0 bottom-0 z-20
-          h-2/3
+          h-4/6
           bg-gradient-to-t
           dark:from-black
         "
